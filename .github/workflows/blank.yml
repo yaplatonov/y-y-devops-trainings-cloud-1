@@ -23,5 +23,5 @@ jobs:
         run: |
           mkdir -p /kaniko/.docker
           echo "{\"auths\":{\"${{ secrets.YC_CR_ID }}\":{\"auth\":\"$(echo -n "json_key:${{ secrets.YC_CR_PASSWORD }}" | base64 | tr -d '\n' )\"}}}" > /kaniko/.docker/config.json
-          /kaniko/executor --context ${{ vars.GITHUB_WORKSPACE }} --dockerfile "${{ vars.GITHUB_WORKSPACE }}/Dockerfile" --destination "secrets.YC_CR_ID/catgpt:${{ vars.GITHUB_ACTOR_ID }}
+          /kaniko/executor --context ${{ vars.GITHUB_WORKSPACE }} --dockerfile "${{ vars.GITHUB_WORKSPACE }}/Dockerfile" --destination "${{ secrets.YC_CR_ID }}/catgpt:${{ vars.GITHUB_ACTOR_ID }}"
           
