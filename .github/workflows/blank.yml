@@ -1,18 +1,24 @@
 name: Docker build
-on: push
+
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
 jobs:
-  docker:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: bitnami/kaniko:1.18.0-debian-11-r1
     steps:
       - uses: actions/checkout@master
+
+      - name: Docker login
+        run: cat ${{ secrets.YC_CR_PASSWORD }} | docker login --username ${{ secrets.YC_CR_USERNAME }} --password-stdin cr.yandex
+     
       - name: Kaniko build
-        uses: aevea/action-kaniko@master
-        with:
-          registry: cr.yandex
-          image: ${{ secrets.YC_REPO }}/yy/catgpt
-          username: ${{ secrets.YC_CR_USERNAME }}
-          password: ${{ secrets.YC_CR_PASSWORD }}
-          tag: ${{ vars.GITHUB_ACTOR_ID }}
-          path: .
-          #cache: true
-          #cache_registry: ${{ secrets.YC_REPO }}/yy/catgpt
+        run: |
+          mkdir -p /kaniko/.docker
+          echo "{\"auths\":{\"${{ secrets.YC_CR_ID }}\":{\"auth\":\"$(echo -n "json_key:${{ secrets.YC_CR_PASSWORD }}" | base64 | tr -d '\n' )\"}}}" > /kaniko/.docker/config.json
+          /kaniko/executor --context ${{ vars.GITHUB_WORKSPACE }} --dockerfile "${{ vars.GITHUB_WORKSPACE }}/Dockerfile" --destination "secrets.YC_CR_ID/catgpt:${{ vars.GITHUB_ACTOR_ID }}
+          
