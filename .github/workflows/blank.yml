@@ -12,7 +12,7 @@ jobs:
           image: ${{ secrets.YC_REPO }}/yy/catgpt
           username: ${{ secrets.YC_CR_USERNAME }}
           password: ${{ secrets.YC_CR_PASSWORD }}
-          tag: ${{ GITHUB_ACTOR_ID }}
+          tag: ${{ vars.GITHUB_ACTOR_ID }}
           path: .
           #cache: true
           #cache_registry: ${{ secrets.YC_REPO }}/yy/catgpt
