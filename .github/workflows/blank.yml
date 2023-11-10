@@ -8,14 +8,15 @@ on:
     branches: [ "main" ]
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
-    container:
-      image: gcr.io/kaniko-project/executor:debug
+  check-out:
+    runs-on: docker
     steps:
       - name: Checkout actions
         uses: actions/checkout@master
-
+  build:
+    runs-on: docker
+    container:
+      image: gcr.io/kaniko-project/executor:debug
       - name: Kaniko build
         run: |
           mkdir -p /kaniko/.docker
