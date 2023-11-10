@@ -18,8 +18,6 @@ jobs:
     runs-on: docker
     container:
       image: gcr.io/kaniko-project/executor:debug
-      volumes:
-        - ${{ vars.GITHUB_WORKSPACE }}:/${{ vars.GITHUB_WORKSPACE }}
     steps:
       - name: Kaniko build
         run: |
