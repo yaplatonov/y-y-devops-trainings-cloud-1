@@ -8,15 +8,19 @@ on:
     branches: [ "main" ]
 
 jobs:
-  check-out:
+  checkout-job:
     runs-on: docker
     steps:
       - name: Checkout actions
         uses: actions/checkout@master
-  build:
+        
+  build-job:
     runs-on: docker
     container:
       image: gcr.io/kaniko-project/executor:debug
+      volumes:
+        - ${{ vars.GITHUB_WORKSPACE }}:/${{ vars.GITHUB_WORKSPACE }}
+    steps:
       - name: Kaniko build
         run: |
           mkdir -p /kaniko/.docker
