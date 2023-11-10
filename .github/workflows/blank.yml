@@ -8,15 +8,14 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-    runs-on: bitnami/kaniko:1.18.0-debian-11-r1
+  docker:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout actions
+        uses: actions/checkout@master
 
-      - name: Docker login
-        run: cat ${{ secrets.YC_CR_PASSWORD }} | docker login --username ${{ secrets.YC_CR_USERNAME }} --password-stdin cr.yandex
-     
       - name: Kaniko build
+        uses: docker://gcr.io/kaniko-project/executor:debug
         run: |
           mkdir -p /kaniko/.docker
           echo "{\"auths\":{\"${{ secrets.YC_CR_ID }}\":{\"auth\":\"$(echo -n "json_key:${{ secrets.YC_CR_PASSWORD }}" | base64 | tr -d '\n' )\"}}}" > /kaniko/.docker/config.json
